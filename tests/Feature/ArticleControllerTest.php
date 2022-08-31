@@ -50,4 +50,38 @@ class ArticleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertViewIs('articles.show');
     }
+
+    public function testGuestEdit()
+    {
+        $article = factory(Article::class)->create();
+
+        $response = $this->get(route('articles.edit', ['article' => $article]));
+
+        $response->assertRedirect(route('login'));
+    }
+
+    public function testAuthEdit()
+    {
+        $user = factory(User::class)->create();
+        $article = factory(Article::class)->create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($user)
+            ->get(route('articles.edit', ['article' => $article]));
+
+        $response->assertStatus(200)
+            ->assertViewIs('articles.edit');
+    }
+
+    public function testAuthEditByAnother()
+    {
+        $user = factory(User::class)->create();
+        $another = factory(User::class)->create();
+
+        $article = factory(Article::class)->create(['user_id' => $another->id]);
+
+        $response = $this->actingAs($user)
+            ->get(route('articles.edit', ['article' => $article]));
+
+        $response->assertStatus(403);
+    }
 }
