@@ -13,6 +13,17 @@ class ArticleControllerTest extends TestCase
 
     use RefreshDatabase;
 
+    private $user;
+    private $another;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = factory(User::class)->create();
+        $this->another = factory(User::class)->create();
+    }
+
     public function testIndex()
     {
         $response = $this->get(route('articles.index'));
@@ -30,10 +41,7 @@ class ArticleControllerTest extends TestCase
 
     public function testAuthCreate()
     {
-
-        $user = factory(User::class)->create();
-
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->user)
             ->get(route('articles.create'));
 
         $response->assertStatus(200)
@@ -50,9 +58,7 @@ class ArticleControllerTest extends TestCase
 
     public function testAuthStore()
     {
-        $user = factory(User::class)->create();
-
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->user)
             ->post(route('articles.store'));
 
         $response->assertRedirect(route('articles.index'));
@@ -79,10 +85,9 @@ class ArticleControllerTest extends TestCase
 
     public function testAuthEditByTheUser()
     {
-        $user = factory(User::class)->create();
-        $article = factory(Article::class)->create(['user_id' => $user->id]);
+        $article = factory(Article::class)->create(['user_id' => $this->user->id]);
 
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->user)
             ->get(route('articles.edit', ['article' => $article]));
 
         $response->assertStatus(200)
@@ -91,12 +96,9 @@ class ArticleControllerTest extends TestCase
 
     public function testAuthEditByAnother()
     {
-        $user = factory(User::class)->create();
-        $another = factory(User::class)->create();
+        $article = factory(Article::class)->create(['user_id' => $this->another->id]);
 
-        $article = factory(Article::class)->create(['user_id' => $another->id]);
-
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->user)
             ->get(route('articles.edit', ['article' => $article]));
 
         $response->assertStatus(403);
@@ -113,11 +115,9 @@ class ArticleControllerTest extends TestCase
 
     public function testAuthUpdateByTheUser()
     {
-        $user = factory(User::class)->create();
+        $article = factory(Article::class)->create(['user_id' => $this->user->id]);
 
-        $article = factory(Article::class)->create(['user_id' => $user->id]);
-
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->user)
             ->put(route('articles.update', ['article' => $article]));
         
         $response->assertRedirect(route('articles.index'));
@@ -125,12 +125,9 @@ class ArticleControllerTest extends TestCase
 
     public function testAuthUpdateByAnother()
     {
-        $user = factory(User::class)->create();
-        $another = factory(User::class)->create();
+        $article = factory(Article::class)->create(['user_id' => $this->another->id]);
 
-        $article = factory(Article::class)->create(['user_id' => $another->id]);
-
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->user)
             ->put(route('articles.update', ['article' => $article]));
         
         $response->assertStatus(403);
@@ -147,13 +144,11 @@ class ArticleControllerTest extends TestCase
 
     public function testDestroyByTheUser()
     {
-        $user = factory(User::class)->create();
-
-        $article = factory(Article::class)->create(['user_id' => $user->id]);
+        $article = factory(Article::class)->create(['user_id' => $this->user->id]);
 
         $this->assertDatabaseHas('articles',['id' => $article->id]);
 
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->user)
             ->delete(route('articles.destroy', ['article' => $article]));
 
         $this->assertDatabaseMissing('articles', ['id' => $article->id]);
@@ -163,14 +158,11 @@ class ArticleControllerTest extends TestCase
 
     public function testDestroyByAnother()
     {
-        $user = factory(User::class)->create();
-        $another = factory(User::class)->create();
-
-        $article = factory(Article::class)->create(['user_id' => $another->id]);
+        $article = factory(Article::class)->create(['user_id' => $this->another->id]);
 
         $this->assertDatabaseHas('articles',['id' => $article->id]);
 
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->user)
             ->delete(route('articles.destroy', ['article' => $article]));
 
         $this->assertDatabaseHas('articles', ['id' => $article->id]);
