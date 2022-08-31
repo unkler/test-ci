@@ -60,7 +60,7 @@ class ArticleControllerTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function testAuthEdit()
+    public function testAuthEditTheUser()
     {
         $user = factory(User::class)->create();
         $article = factory(Article::class)->create(['user_id' => $user->id]);
@@ -81,6 +81,48 @@ class ArticleControllerTest extends TestCase
 
         $response = $this->actingAs($user)
             ->get(route('articles.edit', ['article' => $article]));
+
+        $response->assertStatus(403);
+    }
+
+    public function testGuestDestroy()
+    {
+        $article = factory(Article::class)->create();
+
+        $response = $this->delete(route('articles.destroy', ['article' => $article]));
+
+        $response->assertRedirect(route('login'));
+    }
+
+    public function testDestroyByTheUser()
+    {
+        $user = factory(User::class)->create();
+
+        $article = factory(Article::class)->create(['user_id' => $user->id]);
+
+        $this->assertDatabaseHas('articles',['id' => $article->id]);
+
+        $response = $this->actingAs($user)
+            ->delete(route('articles.destroy', ['article' => $article]));
+
+        $this->assertDatabaseMissing('articles', ['id' => $article->id]);
+
+        $response->assertRedirect(route('articles.index'));
+    }
+
+    public function testDestroyByAnother()
+    {
+        $user = factory(User::class)->create();
+        $another = factory(User::class)->create();
+
+        $article = factory(Article::class)->create(['user_id' => $another->id]);
+
+        $this->assertDatabaseHas('articles',['id' => $article->id]);
+
+        $response = $this->actingAs($user)
+            ->delete(route('articles.destroy', ['article' => $article]));
+
+        $this->assertDatabaseHas('articles', ['id' => $article->id]);
 
         $response->assertStatus(403);
     }
