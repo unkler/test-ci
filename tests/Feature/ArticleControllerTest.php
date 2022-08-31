@@ -77,7 +77,7 @@ class ArticleControllerTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function testAuthEditTheUser()
+    public function testAuthEditByTheUser()
     {
         $user = factory(User::class)->create();
         $article = factory(Article::class)->create(['user_id' => $user->id]);
@@ -99,6 +99,40 @@ class ArticleControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('articles.edit', ['article' => $article]));
 
+        $response->assertStatus(403);
+    }
+
+    public function testGuestUpdate()
+    {
+        $article = factory(Article::class)->create();
+
+        $response = $this->put(route('articles.update', ['article' => $article]));
+        
+        $response->assertRedirect(route('login'));
+    }
+
+    public function testAuthUpdateByTheUser()
+    {
+        $user = factory(User::class)->create();
+
+        $article = factory(Article::class)->create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($user)
+            ->put(route('articles.update', ['article' => $article]));
+        
+        $response->assertRedirect(route('articles.index'));
+    }
+
+    public function testAuthUpdateByAnother()
+    {
+        $user = factory(User::class)->create();
+        $another = factory(User::class)->create();
+
+        $article = factory(Article::class)->create(['user_id' => $another->id]);
+
+        $response = $this->actingAs($user)
+            ->put(route('articles.update', ['article' => $article]));
+        
         $response->assertStatus(403);
     }
 
