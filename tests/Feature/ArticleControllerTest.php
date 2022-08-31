@@ -41,6 +41,23 @@ class ArticleControllerTest extends TestCase
 
     }
 
+    public function testGuestStore()
+    {
+        $response = $this->post(route('articles.store'));
+
+        $response->assertRedirect(route('login'));
+    }
+
+    public function testAuthStore()
+    {
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user)
+            ->post(route('articles.store'));
+
+        $response->assertRedirect(route('articles.index'));
+    }
+
     public function testShow()
     {
         $article = factory(Article::class)->create();
