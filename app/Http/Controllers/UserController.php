@@ -33,6 +33,19 @@ class UserController extends Controller
         ]);
     }
 
+    public function stocks(string $name)
+    {
+        $user = User::where('name', $name)->first()
+            ->load(['likes.user', 'likes.likes', 'likes.tags']);
+        
+        $articles = $user->stocks->sortByDesc('created_at');
+
+        return view('users.stocks', [
+            'user' => $user,
+            'articles' => $articles,
+        ]);
+    }
+
     public function followings(string $name)
     {
         $user = User::where('name', $name)->first()

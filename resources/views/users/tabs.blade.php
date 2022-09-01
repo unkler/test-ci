@@ -11,4 +11,10 @@
       いいね
     </a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link text-muted {{ $hasStocks ? 'active' : '' }}"
+       href="{{ route('users.stocks', ['name' => $user->name]) }}">
+      ストック
+    </a>
+  </li>
 </ul>
