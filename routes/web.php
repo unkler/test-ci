@@ -15,6 +15,8 @@ Route::resource('/articles', 'ArticleController')->only(['show']);
 Route::prefix('articles')->name('articles.')->group(function () {
     Route::put('/{article}/like', 'ArticleController@like')->name('like')->middleware('auth');
     Route::delete('/{article}/like', 'ArticleController@unlike')->name('unlike')->middleware('auth');
+    Route::put('/{article}/stock', 'ArticleController@stock')->name('stock')->middleware('auth');
+    Route::delete('/{article}/stock', 'ArticleController@unstock')->name('unstock')->middleware('auth');
 });
 Route::get('/tags/{name}', 'TagController@show')->name('tags.show');
 Route::prefix('users')->name('users.')->group(function () {
