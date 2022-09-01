@@ -73,7 +73,8 @@
     </div>
   </div>
   <div class="card-body pt-0 pb-2 pl-3">
-    <div class="card-text">
+    <div class="card-text container">
+      <div class="row">
       <article-like
         :initial-is-liked-by='@json($article->isLikedBy(Auth::user()))'
         :initial-count-likes='@json($article->count_likes)'
@@ -81,6 +82,14 @@
         endpoint="{{ route('articles.like', ['article' => $article]) }}"
       >
       </article-like>
+      <article-stock
+        :initial-is-stocked-by='@json($article->isStockedBy(Auth::user()))'
+        :initial-count-stocks='@json($article->count_stocks)'
+        :authorized='@json(Auth::check())'
+        endpoint="{{ route('articles.stock', ['article' => $article]) }}"
+      >
+      </article-stock>
+      </div>
     </div>
   </div>
   @foreach($article->tags as $tag)

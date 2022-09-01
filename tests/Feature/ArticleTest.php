@@ -12,36 +12,66 @@ class ArticleTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $article;
+    private $user;
+    private $another;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->article = factory(Article::class)->create();
+        $this->user = factory(User::class)->create();
+        $this->another = factory(User::class)->create();
+
+    }
+
     public function testIsLikedByNull()
     {
-        $article = factory(Article::class)->create();
-
-        $result = $article->isLikedBy(null);
+        $result = $this->article->isLikedBy(null);
 
         $this->assertFalse($result);
     }
 
     public function testIsLikedByTheUser()
     {
-        $article = factory(Article::class)->create();
-        $user = factory(User::class)->create();
+        $this->article->likes()->attach($this->user);
 
-        $article->likes()->attach($user);
-
-        $result = $article->isLikedBy($user);
+        $result = $this->article->isLikedBy($this->user);
 
         $this->assertTrue($result);
     }
 
     public function testIsLikedByAnother()
     {
-        $article = factory(Article::class)->create();
-        $user = factory(User::class)->create();
-        $another = factory(User::class)->create();
+        $this->article->likes()->attach($this->another);
 
-        $article->likes()->attach($another);
+        $result = $this->article->isLikedBy($this->user);
 
-        $result = $article->isLikedBy($user);
+        $this->assertFalse($result);
+    }
+
+    public function testIsStockedByNull()
+    {
+        $result = $this->article->isStockedBy(null);
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsStockedByTheUser()
+    {
+        $this->article->stocks()->attach($this->user);
+
+        $result = $this->article->isStockedBy($this->user);
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsStockedByAnother()
+    {
+        $this->article->stocks()->attach($this->another);
+
+        $result = $this->article->isStockedBy($this->user);
 
         $this->assertFalse($result);
     }

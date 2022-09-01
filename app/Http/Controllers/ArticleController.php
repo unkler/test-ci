@@ -108,4 +108,25 @@ class ArticleController extends Controller
             'countLikes' => $article->count_likes,
         ];
     }
+    
+    public function stock(Request $request, Article $article)
+    {
+        $article->stocks()->detach($request->user()->id);
+        $article->stocks()->attach($request->user()->id);
+
+        return [
+            'id' => $article->id,
+            'countStocks' => $article->count_stocks,
+        ];
+    }
+
+    public function unstock(Request $request, Article $article)
+    {
+        $article->stocks()->detach($request->user()->id);
+
+        return [
+            'id' => $article->id,
+            'countStocks' => $article->count_stocks,
+        ];
+    }
 }
