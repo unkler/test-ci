@@ -106,3 +106,4 @@
     @endif
   @endforeach
 </div>
+@include('articles.comment')
