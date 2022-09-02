@@ -5,7 +5,7 @@
       class="btn m-0 p-1 shadow-none"
     >
       <i class="fas fa-bookmark mr-1"
-         :class="{'red-text':this.isStockedBy, 'animated heartBeat fast':this.gotToStock}"
+         :class="{'yellow-text':this.isStockedBy, 'animated heartBeat fast':this.gotToStock}"
          @click="clickStock"
       />
     </button>
