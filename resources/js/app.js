@@ -4,6 +4,7 @@ import ArticleLike from './components/ArticleLike'
 import ArticleStock from './components/ArticleStock'
 import ArticleTagsInput from './components/ArticleTagsInput'
 import FollowButton from './components/FollowButton'
+import ArticleComment from './components/ArticleComment'
 
 const app = new Vue({
   el: '#app',
@@ -12,5 +13,6 @@ const app = new Vue({
     ArticleStock,
     ArticleTagsInput,
     FollowButton,
+    ArticleComment,
   }
 })
