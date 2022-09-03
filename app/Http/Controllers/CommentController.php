@@ -8,11 +8,14 @@ use App\Http\Requests\CommentRequest;
 
 class CommentController extends Controller
 {
-    public function store(CommentRequest $request)
+    public function store(Request $request)
     {
         $params = $request->only(['article_id', 'body']);
-        Comment::create($params);
 
-        return redirect()->route('articles.index');
+        $result = Comment::create($params);
+
+        return json_encode([
+            'body' => $result->body,
+        ]);
     }
 }

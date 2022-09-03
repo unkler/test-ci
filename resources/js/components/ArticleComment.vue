@@ -3,17 +3,18 @@
 		<div>
 			<button type="button" class="btn btn-info btn-sm" @click="isDisplayCommentArea = !isDisplayCommentArea">コメントを書く</button>
 		</div>
+		<div class="alert alert-primary alert-dismissible fade show" role="alert" v-show="createdBody !== null">
+			<h6>コメントを登録しました</h6>
+			<p>{{ createdBody }}</p>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">×</span>
+			</button>
+		</div>
 		<transition name="fade-input-comment">
 			<div v-show="isDisplayCommentArea">
 				<div class="form-group">
-					<form method="POST" :action="endpoint">
-						<input type="hidden" name="_token" :value="csrf">
-						<input type="hidden" name="article_id" :value="articleId">
-						<textarea name="body" class="form-control" rows="5" placeholder="本文"></textarea>
-						<div>
-							<button class="btn btn-info btn-sm">送信</button>
-						</div>
-					</form>
+					<textarea name="body" class="form-control" rows="5" placeholder="本文" v-model="body"></textarea>
+					<button class="btn btn-info btn-sm" @click="registerComment" :disabled="commentButtonDisabled">送信</button>
 				</div>
 			</div>
 		</transition>
@@ -23,10 +24,6 @@
 <script>
   export default {
     props: {
-    	csrf: {
-      	type: String,
-        required: true,
-    	},
       articleId: {
       	type: Number,
       },
@@ -37,8 +34,28 @@
     data() {
     	return {
       	isDisplayCommentArea : false,
+				body: null,
+				createdBody: null,
+				commentButtonDisabled: false,
       }
     },
+		methods: {
+			async registerComment() {
+				this.commentButtonDisabled = true
+
+				const data = {
+					article_id : this.articleId,
+          body: this.body,
+        }
+
+				await axios.post(this.endpoint, data)
+					.then(res => {
+						this.createdBody = res.data.body
+					})
+					.catch(error => { console.log(error); })
+			
+			}
+		}
    }
 </script>
 

@@ -107,7 +107,6 @@
   @endforeach
   @include('error_card_list')
   <article-comment
-    :csrf='@json(csrf_token())'
     :article-id='@json($article->id)'
     endpoint="{{ route('comments.store') }}"
   >
