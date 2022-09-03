@@ -25,7 +25,7 @@ class CommentRequest extends FormRequest
     {
         return [
             'article_id' => 'required|exists:articles,id',
-            'body' => 'required|max:5',
+            'body' => 'required|max:500',
         ];
     }
 
