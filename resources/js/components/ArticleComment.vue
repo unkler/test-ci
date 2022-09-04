@@ -13,7 +13,12 @@
 		<transition name="fade-input-comment">
 			<div v-show="isDisplayCommentArea">
 				<div class="form-group">
-					<textarea name="body" class="form-control" rows="5" placeholder="本文" v-model="body"></textarea>
+					<div v-if="$v.body.$dirty">
+            <div class="invalid-feedback d-block" v-if="!$v.body.required">コメントを入力してください。</div>
+						<div class="invalid-feedback d-block" v-if="!$v.body.maxLength">
+							コメントは {{$v.body.$params.maxLength.max}} 文字以内で入力してください。</div>
+          </div>
+					<textarea name="body" class="form-control" rows="5" placeholder="本文" v-model="$v.body.$model"></textarea>
 					<button class="btn btn-info btn-sm" @click="registerComment" :disabled="commentButtonDisabled">送信</button>
 				</div>
 			</div>
@@ -22,6 +27,7 @@
 </template>
 
 <script>
+	import { required, maxLength } from "vuelidate/lib/validators";
   export default {
     props: {
       articleId: {
@@ -55,8 +61,14 @@
 					.catch(error => { console.log(error); })
 			
 			}
+		},
+		validations: {
+			body: {
+				required,
+				maxLength: maxLength(500),
+			},
 		}
-   }
+  }
 </script>
 
 <style scoped>
