@@ -19,4 +19,15 @@ class UserControllerTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function testUploadFile()
+    {
+        $fileName = 'test.jpg';
+
+        $user = factory(User::class)->create();
+
+        $user->update(['file_path' => '/storage/' . $fileName]);
+
+        $this->assertDatabaseHas('users', ['file_path' => '/storage/' . $fileName]);
+    }
 }

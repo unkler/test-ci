@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -99,5 +100,18 @@ class UserController extends Controller
         $request->user()->followings()->detach($user);
 
         return ['name' => $name];
+    }
+
+    public function uploadFile()
+    {
+        $file_name = request()->file->getClientOriginalName();
+
+        request()->file->storeAs('public/', $file_name);
+
+        $user = User::find(Auth::id());
+
+        $user->update(['file_path' => '/storage/' . $file_name]);
+
+        return $user;
     }
 }
