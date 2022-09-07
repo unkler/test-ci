@@ -29,5 +29,8 @@ Route::prefix('users')->name('users.')->group(function () {
         Route::put('/{name}/follow', 'UserController@follow')->name('follow');
         Route::delete('/{name}/follow', 'UserController@unfollow')->name('unfollow');
     });
+    Route::middleware('auth')->group(function () {
+        ROute::post('/upload_file', 'UserController@uploadFile')->name('upload_file');
+    });
 });
 Route::post('/comments', 'CommentController@store')->name('comments.store');

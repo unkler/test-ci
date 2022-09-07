@@ -4,8 +4,10 @@ import Vuelidate from 'vuelidate'
 import ArticleLike from './components/ArticleLike'
 import ArticleStock from './components/ArticleStock'
 import ArticleTagsInput from './components/ArticleTagsInput'
-import FollowButton from './components/FollowButton'
 import ArticleComment from './components/ArticleComment'
+import FollowButton from './components/FollowButton'
+import ImageUpload from './components/ImageUpload'
+
 
 Vue.use(Vuelidate)
 
@@ -15,7 +17,8 @@ const app = new Vue({
     ArticleLike,
     ArticleStock,
     ArticleTagsInput,
-    FollowButton,
     ArticleComment,
+    FollowButton,
+    ImageUpload,
   }
 })
