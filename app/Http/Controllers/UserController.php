@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -102,15 +103,17 @@ class UserController extends Controller
         return ['name' => $name];
     }
 
-    public function uploadFile()
+    public function uploadFile(Request $request)
     {
-        $file_name = request()->file->getClientOriginalName();
+        //「user_icon」へアップロード
+        $uploaded_path = Storage::disk('s3')->putFile('user_icon', $request->file, 'public');
 
-        request()->file->storeAs('public/', $file_name);
+        // アップロードした画像のURLを取得
+        $object_url = Storage::disk('s3')->url($uploaded_path);
 
         $user = User::find(Auth::id());
 
-        $user->update(['file_path' => '/storage/' . $file_name]);
+        $user->update(['file_path' => $object_url]);
 
         return $user;
     }

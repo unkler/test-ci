@@ -26,8 +26,8 @@ class UserControllerTest extends TestCase
 
         $user = factory(User::class)->create();
 
-        $user->update(['file_path' => '/storage/' . $fileName]);
+        $user->update(['file_path' => $fileName]);
 
-        $this->assertDatabaseHas('users', ['file_path' => '/storage/' . $fileName]);
+        $this->assertDatabaseHas('users', ['file_path' => $fileName]);
     }
 }
